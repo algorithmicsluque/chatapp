@@ -1,0 +1,32 @@
+#:kivy 2.0.0
+
+<ChatBubble>:
+    canvas.before:
+        Color:
+            rgba: self.background_color if hasattr(self, 'background_color') else (0.2, 0.6, 0.9, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]
+
+<Button>:
+    background_normal: ''
+    background_color: (0.2, 0.6, 0.9, 1)
+    color: (1, 1, 1, 1)
+    size_hint_y: None
+    height: dp(50)
+    font_size: '16sp'
+
+<TextInput>:
+    background_color: (0.95, 0.95, 0.95, 1)
+    foreground_color: (0, 0, 0, 1)
+    cursor_color: (0, 0, 0, 1)
+    padding: [10, 10, 10, 10]
+    font_size: '16sp'
+
+<Label>:
+    color: (0, 0, 0, 1)
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+    padding: [10, 10, 10, 10] 
