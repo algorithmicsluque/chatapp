@@ -1,32 +1,227 @@
-#:kivy 2.0.0
+#:kivy 2.3.1
 
-<ChatBubble>:
+<ChatBubble@BoxLayout>:
+    text: ''
+    is_user: False
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: max(lbl.height + 20, 50)
+    padding: [10, 10, 10, 10]
+    spacing: 10
+    
     canvas.before:
         Color:
-            rgba: self.background_color if hasattr(self, 'background_color') else (0.2, 0.6, 0.9, 1)
+            rgba: (0.2, 0.6, 1, 1) if root.is_user else (0.95, 0.95, 0.95, 1)
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [10,]
+            radius: [20,]
 
-<Button>:
-    background_normal: ''
-    background_color: (0.2, 0.6, 0.9, 1)
-    color: (1, 1, 1, 1)
+    Widget:
+        size_hint_x: None
+        width: 40 if not root.is_user else 0
+
+    Label:
+        id: lbl
+        text: root.text
+        text_size: self.width, None
+        size_hint_x: 1
+        color: (1, 1, 1, 1) if root.is_user else (0, 0, 0, 1)
+        halign: 'left' if not root.is_user else 'right'
+        valign: 'middle'
+        height: self.texture_size[1]
+
+    Widget:
+        size_hint_x: None
+        width: 40 if root.is_user else 0
+
+<ChatItem@Button>:
     size_hint_y: None
-    height: dp(50)
-    font_size: '16sp'
-
-<TextInput>:
+    height: 50
     background_color: (0.95, 0.95, 0.95, 1)
-    foreground_color: (0, 0, 0, 1)
-    cursor_color: (0, 0, 0, 1)
-    padding: [10, 10, 10, 10]
-    font_size: '16sp'
-
-<Label>:
+    background_normal: ''
     color: (0, 0, 0, 1)
-    text_size: self.size
+    text_size: self.width - dp(20), None
     halign: 'left'
-    valign: 'middle'
-    padding: [10, 10, 10, 10] 
+    valign: 'center'
+    padding: [10, 0, 10, 0]
+
+<ChatScreen>:
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    # Panel lateral
+    BoxLayout:
+        size_hint_x: root.nav_width
+        orientation: 'vertical'
+        padding: [10, 10, 10, 10]
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: (0.98, 0.98, 0.98, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        
+        # Logo y título
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            orientation: 'horizontal'
+            padding: [10, 0, 10, 0]
+            spacing: 10
+            
+            Label:
+                text: 'ChatGPT'
+                font_size: '20sp'
+                bold: True
+                color: (0, 0, 0, 1)
+        
+        # Botón para nuevo chat
+        Button:
+            text: '+ New Chat'
+            size_hint_y: None
+            height: 50
+            background_color: (0.2, 0.6, 1, 1)
+            background_normal: ''
+            color: (1, 1, 1, 1)
+            on_press: root.create_new_chat()
+        
+        # Lista de chats
+        ScrollView:
+            RecycleView:
+                id: chat_list
+                viewclass: 'ChatItem'
+                RecycleBoxLayout:
+                    default_size: None, 50
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: 5
+        
+        # Footer
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            orientation: 'horizontal'
+            padding: [10, 0, 10, 0]
+            spacing: 10
+            
+            Button:
+                text: 'Clear Chats'
+                size_hint_x: 1
+                background_color: (0.8, 0.2, 0.2, 1)
+                background_normal: ''
+                color: (1, 1, 1, 1)
+                on_press: root.clear_chats()
+    
+    # Área de chat
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [0, 0, 0, 0]
+        spacing: 0
+        
+        # Barra superior
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            padding: [20, 0, 20, 0]
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: (0.98, 0.98, 0.98, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Color:
+                    rgba: (0.9, 0.9, 0.9, 1)
+                Line:
+                    points: [self.x, self.y, self.right, self.y]
+                    width: 1
+            
+            Button:
+                size_hint_x: None
+                width: 40
+                background_color: (0, 0, 0, 0)
+                on_press: root.toggle_nav()
+                Image:
+                    source: 'menu.png' if root.is_nav_open else 'menu_closed.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    size: 24, 24
+                    allow_stretch: True
+
+            Label:
+                text: root.current_chat_title
+                font_size: '18sp'
+                bold: True
+                color: (0, 0, 0, 1)
+        
+        # Área de mensajes
+        ScrollView:
+            id: chat_scroll
+            do_scroll_x: False
+            bar_width: 10
+            bar_color: [0.7, 0.7, 0.7, 0.9]
+            bar_inactive_color: [0.7, 0.7, 0.7, 0.2]
+            effect_cls: "ScrollEffect"
+            scroll_type: ['bars', 'content']
+            
+            RecycleView:
+                id: chat_messages
+                viewclass: 'ChatBubble'
+                RecycleBoxLayout:
+                    default_size: None, None
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: 10
+                    padding: [20, 20, 20, 20]
+        
+        # Área de entrada
+        BoxLayout:
+            size_hint_y: None
+            height: max(message_input.height + 40, 100)
+            padding: [20, 10, 20, 20]
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: (0.98, 0.98, 0.98, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Color:
+                    rgba: (0.9, 0.9, 0.9, 1)
+                Line:
+                    points: [self.x, self.top, self.right, self.top]
+                    width: 1
+            
+            TextInput:
+                id: message_input
+                hint_text: 'Send a message...'
+                multiline: True
+                size_hint_y: None
+                height: max(min(self.minimum_height, 150), 40)
+                padding: [15, 10, 15, 10]
+                background_color: (0.95, 0.95, 0.95, 1)
+                background_normal: ''
+                foreground_color: (0, 0, 0, 1)
+                hint_text_color: (0.5, 0.5, 0.5, 1)
+                on_text_validate: root.on_message_submit(self)
+            
+            Button:
+                text: 'Send'
+                size_hint: None, None
+                size: 100, 40
+                pos_hint: {'center_y': 0.5}
+                background_color: (0.2, 0.6, 1, 1)
+                background_normal: ''
+                color: (1, 1, 1, 1)
+                on_press: root.send_message() 
