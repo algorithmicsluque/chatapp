@@ -1,0 +1,58 @@
+{
+    "chats": [
+        {
+            "id": 1,
+            "title": "Welcome Chat",
+            "timestamp": "2024-02-20T12:00:00",
+            "messages": [
+                {
+                    "content": "Welcome to DeepSeek!",
+                    "role": "assistant",
+                    "timestamp": "2024-02-20T12:00:05"
+                },
+                {
+                    "content": "Hola\nHola\nComo estas\nsadsad",
+                    "role": "user",
+                    "timestamp": "2025-04-04T23:45:02.093597"
+                },
+                {
+                    "content": "This is a simulated response.",
+                    "role": "assistant",
+                    "timestamp": "2025-04-04T23:45:02.093597"
+                },
+                {
+                    "content": "Hola como estas",
+                    "role": "user",
+                    "timestamp": "2025-04-04T23:45:06.960873"
+                },
+                {
+                    "content": "This is a simulated response.",
+                    "role": "assistant",
+                    "timestamp": "2025-04-04T23:45:06.960873"
+                },
+                {
+                    "content": "Hola\nasdasdasd\nasdadsad\nasdada",
+                    "role": "user",
+                    "timestamp": "2025-04-04T23:50:15.206420"
+                },
+                {
+                    "content": "This is a simulated response.",
+                    "role": "assistant",
+                    "timestamp": "2025-04-04T23:50:15.206420"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Chat 2",
+            "timestamp": "2025-04-04T23:44:54.345074",
+            "messages": []
+        },
+        {
+            "id": 3,
+            "title": "Chat 3",
+            "timestamp": "2025-04-04T23:50:21.027155",
+            "messages": []
+        }
+    ]
+}
